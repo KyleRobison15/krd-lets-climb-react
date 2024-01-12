@@ -1,6 +1,5 @@
 import { HStack, useColorModeValue } from "@chakra-ui/react";
 import NavMenu from "./NavMenu";
-import ColorModeSwitch from "./ColorModeSwitch";
 import NavBarLogo from "./NavBarLogo";
 
 const NavBarMobile = () => {
@@ -19,7 +18,6 @@ const NavBarMobile = () => {
       bg={navBarBg}
     >
       <NavBarLogo logoSize="72px" />
-      <ColorModeSwitch />
       <NavMenu />
     </HStack>
   );

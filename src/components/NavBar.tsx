@@ -1,6 +1,6 @@
 import { Button, HStack, useColorModeValue } from "@chakra-ui/react";
-import ColorModeSwitch from "./ColorModeSwitch";
 import NavBarLogo from "./NavBarLogo";
+import ColorModeButton from "./ColorModeButton";
 
 const NavBar = () => {
   const navBarBg = useColorModeValue("", "gray.900");
@@ -13,14 +13,14 @@ const NavBar = () => {
       w="100%"
       top="0"
       h="100px"
-      p="10px 20px"
+      p="10px 30px"
       justifyContent="space-between"
       shadow="sm"
       bg={navBarBg}
     >
       <NavBarLogo logoSize="72px" />
       <HStack gap={5}>
-        <ColorModeSwitch />
+        <ColorModeButton />
         <Button colorScheme="yellow" variant="ghost">
           Sign in
         </Button>
