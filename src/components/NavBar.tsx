@@ -1,12 +1,10 @@
 import { Button, HStack, useColorModeValue } from "@chakra-ui/react";
 import NavBarLogo from "./NavBarLogo";
 import ColorModeButton from "./ColorModeButton";
+import { navBarBgColors } from "../utility/bgColors";
 
 const NavBar = () => {
-  const navBarBg = useColorModeValue(
-    "rgba(255,255,255,0.8)",
-    "rgba(0,0,0,0.3)"
-  );
+  const navBarBg = useColorModeValue(navBarBgColors.light, navBarBgColors.dark);
 
   return (
     <HStack
