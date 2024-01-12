@@ -1,16 +1,8 @@
-import {
-  Button,
-  HStack,
-  Image,
-  useColorMode,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import logoDark from "../assets/LetsClimb_Logo2_Dark.png";
-import logoLight from "../assets/LetsClimb_Logo2_Light.png";
+import { Button, HStack, useColorModeValue } from "@chakra-ui/react";
 import ColorModeSwitch from "./ColorModeSwitch";
+import NavBarLogo from "./NavBarLogo";
 
 const NavBar = () => {
-  const { colorMode } = useColorMode();
   const navBarBg = useColorModeValue("", "gray.900");
 
   return (
@@ -26,12 +18,7 @@ const NavBar = () => {
       shadow="sm"
       bg={navBarBg}
     >
-      <Image
-        src={colorMode === "light" ? logoLight : logoDark}
-        boxSize="72px"
-        cursor="pointer"
-        borderRadius="5px"
-      />
+      <NavBarLogo logoSize="72px" />
       <HStack gap={5}>
         <ColorModeSwitch />
         <Button colorScheme="yellow" variant="ghost">
