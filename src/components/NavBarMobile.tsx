@@ -3,7 +3,10 @@ import NavMenu from "./NavMenu";
 import NavBarLogo from "./NavBarLogo";
 
 const NavBarMobile = () => {
-  const navBarBg = useColorModeValue("", "gray.900");
+  const navBarBg = useColorModeValue(
+    "rgba(255,255,255,0.8)",
+    "rgba(0,0,0,0.3)"
+  );
 
   return (
     <HStack
@@ -14,8 +17,8 @@ const NavBarMobile = () => {
       h="100px"
       p="10px 20px"
       justifyContent="space-between"
-      shadow="sm"
-      bg={navBarBg}
+      shadow="md"
+      bgColor={navBarBg}
     >
       <NavBarLogo logoSize="72px" />
       <NavMenu />

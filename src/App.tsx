@@ -1,6 +1,7 @@
 import { Grid, GridItem, Hide, Show } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import NavBarMobile from "./components/NavBarMobile";
+import Splash from "./pages/Splash";
 
 const App = () => {
   return (
@@ -13,7 +14,9 @@ const App = () => {
           <NavBar />
         </Hide>
       </GridItem>
-      <GridItem area="main"></GridItem>
+      <GridItem area="main">
+        <Splash />
+      </GridItem>
     </Grid>
   );
 };
