@@ -1,10 +1,10 @@
-import { HStack, useColorModeValue } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import NavMenu from "./NavMenu";
 import NavBarLogo from "./NavBarLogo";
-import { navBarBgColors } from "../utility/bgColors";
+import useCustomColorValues from "../hooks/useCustomColorValues";
 
 const NavBarMobile = () => {
-  const navBarBg = useColorModeValue(navBarBgColors.light, navBarBgColors.dark);
+  const { navBarBg } = useCustomColorValues();
 
   return (
     <HStack

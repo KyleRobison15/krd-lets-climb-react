@@ -1,16 +1,13 @@
 import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
 import SplashBgLight from "../assets/Splash_Bg_Light.jpg";
 import SplashBgDark from "../assets/Splash_Bg_Dark.jpeg";
-import { formContainerBgColors } from "../utility/bgColors";
 import SignInForm from "../components/forms/SignInForm";
+import useCustomColorValues from "../hooks/useCustomColorValues";
 
 const Splash = () => {
   const splashBg = useColorModeValue(SplashBgLight, SplashBgDark);
 
-  const formContainerBg = useColorModeValue(
-    formContainerBgColors.light,
-    formContainerBgColors.dark
-  );
+  const { formContainerBg } = useCustomColorValues();
 
   return (
     <Flex

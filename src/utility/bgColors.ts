@@ -12,3 +12,8 @@ export const focusBorderColors = {
   light: "yellow.400",
   dark: "yellow.200",
 };
+
+export const errorBorderColors = {
+  light: "red.500",
+  dark: "red.300",
+};
