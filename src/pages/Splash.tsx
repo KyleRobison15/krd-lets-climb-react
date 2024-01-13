@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   Box,
   Button,
@@ -20,7 +20,14 @@ import SplashBgDark from "../assets/Splash_Bg_Dark.jpeg";
 import { focusBorderColors, formContainerBgColors } from "../utility/bgColors";
 
 const Splash = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [authRequest, setAuthRequest] = useState({
+    username: "",
+    password: "",
+  });
+
   const splashBg = useColorModeValue(SplashBgLight, SplashBgDark);
+
   const formContainerBg = useColorModeValue(
     formContainerBgColors.light,
     formContainerBgColors.dark
@@ -31,9 +38,11 @@ const Splash = () => {
     focusBorderColors.dark
   );
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const handleShowPassword = () => setShowPassword(!showPassword);
+  const handleSignIn = (e: FormEvent) => {
+    e.preventDefault();
+    console.log(authRequest);
+  };
 
   return (
     <Flex
@@ -60,26 +69,36 @@ const Splash = () => {
         <Heading textAlign="center" mb={4}>
           Climb on!
         </Heading>
-        <VStack
-          as="form"
-          onSubmit={() => console.log("Submitted")}
-          spacing={4}
-          align="stretch"
-        >
+        <VStack as="form" onSubmit={handleSignIn} spacing={4} align="stretch">
           <FormControl colorScheme="yellow">
             <FormLabel htmlFor="username">Username</FormLabel>
             <Input
               id="username"
               focusBorderColor={inputFocusColor}
               type="text"
+              value={authRequest.username}
+              onChange={(e) =>
+                setAuthRequest({
+                  ...authRequest,
+                  username: e.currentTarget.value,
+                })
+              }
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Password</FormLabel>
+            <FormLabel htmlFor="password">Password</FormLabel>
             <InputGroup>
               <Input
+                id="password"
                 focusBorderColor={inputFocusColor}
                 type={showPassword ? "text" : "password"}
+                value={authRequest.password}
+                onChange={(e) =>
+                  setAuthRequest({
+                    ...authRequest,
+                    password: e.currentTarget.value,
+                  })
+                }
               />
               <InputRightElement>
                 <IconButton
