@@ -1,26 +1,22 @@
-import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
-import SplashBgLight from "../assets/Splash_Bg_Light.jpg";
-import SplashBgDark from "../assets/Splash_Bg_Dark.jpeg";
-import SignInForm from "../components/forms/SignInForm";
+import { Box, Flex } from "@chakra-ui/react";
+import RegisterForm from "../components/forms/RegisterForm";
 import useCustomColorValues from "../hooks/useCustomColorValues";
+import SignInForm from "../components/forms/SignInForm";
 
 const Splash = () => {
-  const splashBg = useColorModeValue(SplashBgLight, SplashBgDark);
-
-  const { formContainerBg } = useCustomColorValues();
+  const { formContainerBg, splashBgImage } = useCustomColorValues();
 
   return (
     <Flex
-      h="100vh"
-      w="100%"
-      bgImage={`url('${splashBg}')`}
+      id="splash"
+      flexGrow="1"
+      bgImage={`url('${splashBgImage}')`}
       bgRepeat="no-repeat"
       bgPos="center"
       bgSize="cover"
       bgColor="rgba(255, 255, 255, 0.6)"
       justifyContent="center"
       alignItems="center"
-      pos="relative"
     >
       <Box
         p={10}
@@ -28,9 +24,9 @@ const Splash = () => {
         bgColor={formContainerBg}
         w={[320, 420]}
         shadow="md"
-        pos="absolute"
-        top="25%"
+        my="30px"
       >
+        {/* <RegisterForm /> */}
         <SignInForm />
       </Box>
     </Flex>
