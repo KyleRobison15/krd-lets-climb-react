@@ -1,5 +1,4 @@
 import { Box, Flex } from "@chakra-ui/react";
-import RegisterForm from "../components/forms/RegisterForm";
 import useCustomColorValues from "../hooks/useCustomColorValues";
 import SignInForm from "../components/forms/SignInForm";
 
@@ -26,7 +25,6 @@ const Splash = () => {
         shadow="md"
         my="30px"
       >
-        {/* <RegisterForm /> */}
         <SignInForm />
       </Box>
     </Flex>

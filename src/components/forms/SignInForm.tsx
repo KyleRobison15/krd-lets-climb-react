@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import { Box, Button, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
+import AuthContext, { AuthResponse } from "../../context/AuthProvider";
+import apiClient from "../../api/apiClient";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -21,16 +24,25 @@ const signInFormSchema = z.object({
 type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
+  // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
+  const { setAuth, auth } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useZodForm({ schema: signInFormSchema });
 
-  const onSignIn = (data: FormData) => console.log(data);
+  const onSignIn = (data: FormData) => {
+    apiClient
+      .post<AuthResponse>("/auth/authenticate", data)
+      .then((res) => setAuth(res.data))
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
+      {console.log(`Auth Context: ${auth.accessToken}`)}
       <Heading textAlign="center" mb={4}>
         Climb on!
       </Heading>
