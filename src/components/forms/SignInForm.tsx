@@ -1,11 +1,20 @@
-import { useContext } from "react";
-import { Box, Button, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
+import { useContext, useState } from "react";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  VStack,
+} from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
 import AuthContext, { AuthResponse } from "../../context/AuthProvider";
-import apiClient from "../../api/apiClient";
+import apiClient, { apiEndpoints } from "../../api/apiClient";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -26,6 +35,7 @@ type FormData = z.infer<typeof signInFormSchema>;
 const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
   const { setAuth, auth } = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
@@ -35,14 +45,21 @@ const SignInForm = () => {
 
   const onSignIn = (data: FormData) => {
     apiClient
-      .post<AuthResponse>("/auth/authenticate", data)
+      .post<AuthResponse>(apiEndpoints.authenticate, data)
       .then((res) => setAuth(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err?.response?.status === 403) {
+          setErrorMessage("Invalid username or password.");
+        } else {
+          setErrorMessage(
+            "Oops! There was an unexpected error. Please try again later."
+          );
+        }
+      });
   };
 
   return (
     <>
-      {console.log(`Auth Context: ${auth.accessToken}`)}
       <Heading textAlign="center" mb={4}>
         Climb on!
       </Heading>
@@ -52,6 +69,12 @@ const SignInForm = () => {
         spacing={4}
         align="stretch"
       >
+        {errorMessage && (
+          <Alert borderRadius="5px" status="error">
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        )}
         <FormInput
           label={"Username"}
           id={"username"}
