@@ -3,6 +3,7 @@ import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
+import { Link } from "react-router-dom";
 
 const registerFormSchema = z
   .object({
@@ -119,9 +120,11 @@ const RegisterForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Already have an account?
-            <Button pl={2} colorScheme="yellow" variant="link">
-              Sign in
-            </Button>
+            <Link to="/">
+              <Button pl={2} colorScheme="yellow" variant="link">
+                Sign in
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </VStack>

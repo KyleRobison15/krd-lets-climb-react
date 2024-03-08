@@ -2,7 +2,7 @@ import { Flex, HStack, Hide, Show } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import NavBarMobile from "./components/NavBarMobile";
 import useCustomColorValues from "./hooks/useCustomColorValues";
-import Splash from "./pages/Splash";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   const { navBarBg } = useCustomColorValues();
@@ -30,7 +30,7 @@ const App = () => {
         </Hide>
       </HStack>
       <Flex as="main" id="main-container" flexGrow="1" mt="100px">
-        <Splash />
+        <Outlet />
       </Flex>
     </Flex>
   );

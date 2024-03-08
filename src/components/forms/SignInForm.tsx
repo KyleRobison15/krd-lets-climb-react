@@ -15,6 +15,7 @@ import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
 import AuthContext, { AuthResponse } from "../../context/AuthProvider";
 import apiClient, { apiEndpoints } from "../../api/apiClient";
+import { Link } from "react-router-dom";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -34,7 +35,7 @@ type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
-  const { setAuth, auth } = useContext(AuthContext);
+  const { setAuth } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
 
   const {
@@ -61,7 +62,7 @@ const SignInForm = () => {
   return (
     <>
       <Heading textAlign="center" mb={4}>
-        Climb on!
+        Climb On!
       </Heading>
       <VStack
         as="form"
@@ -97,9 +98,11 @@ const SignInForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Dont have an account?
-            <Button pl={2} colorScheme="yellow" variant="link">
-              Sign up
-            </Button>
+            <Link to="/register">
+              <Button pl={2} colorScheme="yellow" variant="link">
+                Sign up
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </VStack>

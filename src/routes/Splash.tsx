@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import useCustomColorValues from "../hooks/useCustomColorValues";
-import SignInForm from "../components/forms/SignInForm";
+import { Outlet } from "react-router-dom";
 
 const Splash = () => {
   const { formContainerBg, splashBgImage } = useCustomColorValues();
@@ -25,7 +25,7 @@ const Splash = () => {
         shadow="md"
         my="30px"
       >
-        <SignInForm />
+        <Outlet />
       </Box>
     </Flex>
   );
