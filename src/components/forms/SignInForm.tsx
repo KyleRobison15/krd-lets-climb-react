@@ -14,7 +14,7 @@ import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
 import apiClient, { apiEndpoints } from "../../api/apiClient";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 const signInFormSchema = z.object({
@@ -37,6 +37,7 @@ const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
   const { setAuth, auth } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -47,7 +48,10 @@ const SignInForm = () => {
   const onSignIn = (data: FormData) => {
     apiClient
       .post<typeof auth>(apiEndpoints.authenticate, data)
-      .then((res) => setAuth(res.data))
+      .then((res) => {
+        setAuth(res.data);
+        navigate("/climbs");
+      })
       .catch((err) => {
         if (err?.response?.status === 403) {
           setErrorMessage("Invalid username or password.");

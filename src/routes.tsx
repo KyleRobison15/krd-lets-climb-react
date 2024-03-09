@@ -31,7 +31,7 @@ const applicationRoutes = [
         element: <RequireAuth />,
         children: [
           {
-            path: "/",
+            path: "climbs",
             element: <Home />,
           },
         ],
