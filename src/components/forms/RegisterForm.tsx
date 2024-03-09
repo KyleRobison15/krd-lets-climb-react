@@ -120,7 +120,7 @@ const RegisterForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Already have an account?
-            <Link to="/">
+            <Link to="/auth/login">
               <Button pl={2} colorScheme="yellow" variant="link">
                 Sign in
               </Button>

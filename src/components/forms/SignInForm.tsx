@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   AlertIcon,
@@ -13,9 +13,9 @@ import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
-import AuthContext, { AuthResponse } from "../../context/AuthProvider";
 import apiClient, { apiEndpoints } from "../../api/apiClient";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -35,7 +35,7 @@ type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth, auth } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
 
   const {
@@ -46,7 +46,7 @@ const SignInForm = () => {
 
   const onSignIn = (data: FormData) => {
     apiClient
-      .post<AuthResponse>(apiEndpoints.authenticate, data)
+      .post<typeof auth>(apiEndpoints.authenticate, data)
       .then((res) => setAuth(res.data))
       .catch((err) => {
         if (err?.response?.status === 403) {
@@ -98,7 +98,7 @@ const SignInForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Dont have an account?
-            <Link to="/register">
+            <Link to="/auth/register">
               <Button pl={2} colorScheme="yellow" variant="link">
                 Sign up
               </Button>

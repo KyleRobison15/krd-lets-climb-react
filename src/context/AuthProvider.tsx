@@ -2,7 +2,7 @@
 
 /**
  * This is how we provide a global authentication context to our entire application.
- * The AuthProvider will track changes is authentication state and apply those changes to every component via the AuthContext
+ * The AuthProvider will track changes in authentication state and apply those changes to every component via the AuthContext
  * To get the authentication state of our app, all we need to do in the component is reference the state of the AuthContext
  * This is IMPORTANT in how we are implementing authentication because it allows us to store the JWT in MEMORY instead of in local storage or as a cookie
  * This is a much more secure way of handling JWTs

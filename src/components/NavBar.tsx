@@ -9,12 +9,12 @@ const NavBar = () => {
       <NavBarLogo logoSize="72px" />
       <HStack gap={5}>
         <ColorModeButton />
-        <Link to="/">
+        <Link to="/auth/login">
           <Button colorScheme="yellow" variant="ghost">
             Sign in
           </Button>
         </Link>
-        <Link to={"/register"}>
+        <Link to={"/auth/register"}>
           <Button colorScheme="yellow" variant="solid">
             Sign up
           </Button>

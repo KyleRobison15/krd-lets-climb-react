@@ -11,6 +11,7 @@ import {
   MenuList,
   useColorMode,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const NavMenu = () => {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -27,12 +28,16 @@ const NavMenu = () => {
         borderWidth="3px"
       />
       <MenuList>
-        <MenuItem icon={<BiLogInCircle fontSize="20px" />} fontSize="lg">
-          Sign in
-        </MenuItem>
-        <MenuItem icon={<FiUserPlus fontSize="20px" />} fontSize="lg">
-          Sign up
-        </MenuItem>
+        <Link to="/auth/login">
+          <MenuItem icon={<BiLogInCircle fontSize="20px" />} fontSize="lg">
+            Sign in
+          </MenuItem>
+        </Link>
+        <Link to="/auth/register">
+          <MenuItem icon={<FiUserPlus fontSize="20px" />} fontSize="lg">
+            Sign up
+          </MenuItem>
+        </Link>
         <MenuDivider />
         <MenuItem
           icon={
