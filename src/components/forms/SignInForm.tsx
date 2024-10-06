@@ -8,6 +8,7 @@ import {
   Flex,
   Heading,
   VStack,
+  Text
 } from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
@@ -65,9 +66,10 @@ const SignInForm = () => {
 
   return (
     <>
-      <Heading textAlign="center" mb={4}>
+      <Heading textAlign="center">
         Climb On!
       </Heading>
+      <Text textAlign="center" mb={4}>Sign in to your account.</Text>
       <VStack
         as="form"
         onSubmit={handleSubmit(onSignIn)}
