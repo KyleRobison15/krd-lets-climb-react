@@ -8,12 +8,12 @@ const splashBgImage = {
 };
 
 const navBarBgColors = {
-  light: "rgba(255,255,255,1)",
+  light: "rgba(255,255,255,0.9)",
   dark: "rgba(0,0,0,1)",
 };
 
 const formContainerBgColors = {
-  light: "rgba(255,255,255,1)",
+  light: "rgba(255,255,255,0.9)",
   dark: "rgba(0,0,0,0.8)",
 };
 

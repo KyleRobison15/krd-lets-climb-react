@@ -1,8 +1,9 @@
-import { Box, Button, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Heading, VStack, Text } from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
+import { Link } from "react-router-dom";
 
 const registerFormSchema = z
   .object({
@@ -57,9 +58,12 @@ const RegisterForm = () => {
 
   return (
     <>
-      <Heading textAlign="center" mb={4}>
+      <Heading textAlign="center">
         On Belay?
       </Heading>
+      <Text textAlign="center" mb={4}>
+        Create a new account.
+      </Text>
       <VStack
         as="form"
         onSubmit={handleSubmit(onRegister)}
@@ -119,9 +123,11 @@ const RegisterForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Already have an account?
-            <Button pl={2} colorScheme="yellow" variant="link">
-              Sign in
-            </Button>
+            <Link to="/auth/login">
+              <Button pl={2} colorScheme="yellow" variant="link">
+                Sign in
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </VStack>

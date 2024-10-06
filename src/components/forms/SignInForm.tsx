@@ -1,8 +1,22 @@
-import { Box, Button, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
+import { useState } from "react";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  VStack,
+  Text
+} from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
+import apiClient, { apiEndpoints } from "../../api/apiClient";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -21,25 +35,53 @@ const signInFormSchema = z.object({
 type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
+  // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
+  const { setAuth, auth } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useZodForm({ schema: signInFormSchema });
 
-  const onSignIn = (data: FormData) => console.log(data);
+  const onSignIn = (data: FormData) => {
+    apiClient
+      .post<typeof auth>(apiEndpoints.authenticate, data)
+      .then((res) => {
+        setAuth(res.data);
+        navigate("/climbs");
+      })
+      .catch((err) => {
+        if (err?.response?.status === 403) {
+          setErrorMessage("Invalid username or password.");
+        } else {
+          setErrorMessage(
+            "Oops! There was an unexpected error. Please try again later."
+          );
+        }
+      });
+  };
 
   return (
     <>
-      <Heading textAlign="center" mb={4}>
-        Climb on!
+      <Heading textAlign="center">
+        Climb On!
       </Heading>
+      <Text textAlign="center" mb={4}>Sign in to your account.</Text>
       <VStack
         as="form"
         onSubmit={handleSubmit(onSignIn)}
         spacing={4}
         align="stretch"
       >
+        {errorMessage && (
+          <Alert borderRadius="5px" status="error">
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        )}
         <FormInput
           label={"Username"}
           id={"username"}
@@ -62,9 +104,11 @@ const SignInForm = () => {
         <Flex gap={2} justifyContent="center">
           <Box textAlign="center">
             Dont have an account?
-            <Button pl={2} colorScheme="yellow" variant="link">
-              Sign up
-            </Button>
+            <Link to="/auth/register">
+              <Button pl={2} colorScheme="yellow" variant="link">
+                Sign up
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </VStack>
