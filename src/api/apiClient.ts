@@ -4,6 +4,18 @@ const apiVersion = "v1";
 
 const rootApiPath = `api/${apiVersion}`;
 
+export interface ErrorDetail {
+  code: string,
+  target: string,
+  description: string
+}
+
+export interface ApiError {
+  apiErrorCode: string,
+  message: string,
+  errorDetails: ErrorDetail[]
+}
+
 export const apiEndpoints = {
   authenticate: "auth/authenticate",
   register: "auth/register",
