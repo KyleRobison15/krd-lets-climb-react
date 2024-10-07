@@ -1,26 +1,25 @@
-import { Box, Button, Divider, Flex, Heading, VStack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  VStack,
+  Text,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import apiClient, { ApiError, apiEndpoints } from "../../api/apiClient";
+import useAuth from "../../hooks/useAuth";
+import { useState } from "react";
 
 const registerFormSchema = z
   .object({
-    firstName: z
-      .string()
-      .min(1, { message: "First Name is required." })
-      .max(35, { message: "First Name must be less than 35 characters." })
-      .regex(RegExp("/^([^0-9]*)$/"), {
-        message: "First Name cannot contain numbers.",
-      }),
-    lastName: z
-      .string()
-      .min(1, { message: "Last Name is required." })
-      .max(50, { message: "Last Name must be less than 50 characters." })
-      .regex(RegExp("/^([^0-9]*)$/"), {
-        message: "Last Name cannot contain numbers.",
-      }),
     email: z
       .string()
       .min(1, { message: "Email is required." })
@@ -35,7 +34,11 @@ const registerFormSchema = z
       }),
     confirmPassword: z
       .string()
-      .min(1, { message: "Password confirmation is required." }),
+      .min(1, { message: "Password confirmation is required." })
+      .regex(RegExp("^(?=.*[0-9]).{8,}$"), {
+        message:
+          "Password must be at least 8 characters long and contain at least 1 number.",
+      }),
   })
   .refine((data) => data.confirmPassword === data.password, {
     message: "Passwords do not match.",
@@ -48,19 +51,60 @@ const registerFormSchema = z
 type FormData = z.infer<typeof registerFormSchema>;
 
 const RegisterForm = () => {
+  // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
+  const { setAuth, auth } = useAuth();
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError
   } = useZodForm({ schema: registerFormSchema });
 
-  const onRegister = (data: FormData) => console.log(data);
+  const onRegister = (data: FormData) => {
+    const registerRequestDto = {
+      email: data.email,
+      username: data.username,
+      password: data.password,
+    };
+
+    apiClient
+      .post<typeof auth>(apiEndpoints.register, registerRequestDto)
+      .then((response) => {
+        setAuth(response.data);
+        navigate("/climbs");
+      })
+      .catch((error) => {
+        const {
+          response: { data: apiError, status },
+        }: { response: { data: ApiError; status: number } } = error;
+
+        // If the error response is due to a bad request, set the error messages on the fields that failed the request
+        if (status === 400) {
+          
+          apiError.errorDetails.forEach((detail) => {
+            const errorField = detail.target.split("/").pop();
+            setError(errorField as `root.${string}`, {
+              type: "manual",
+              message: detail.description,
+            });
+          })
+
+        }
+        // Use generic error response if the error was unexpected
+        else {
+          setErrorMessage(
+            "Oops! There was an unexpected error. Please try again later."
+          );
+        }
+      });
+  };
 
   return (
     <>
-      <Heading textAlign="center">
-        On Belay?
-      </Heading>
+      <Heading textAlign="center">On Belay?</Heading>
       <Text textAlign="center" mb={4}>
         Create a new account.
       </Text>
@@ -70,22 +114,12 @@ const RegisterForm = () => {
         spacing={4}
         align="stretch"
       >
-        <FormInput
-          label={"First Name"}
-          id={"firstName"}
-          type={"text"}
-          isInvalid={errors.firstName ? true : false}
-          register={{ ...register("firstName") }}
-          errorMessage={errors.firstName?.message}
-        />
-        <FormInput
-          label={"Last Name"}
-          id={"lastName"}
-          type={"text"}
-          isInvalid={errors.lastName ? true : false}
-          register={{ ...register("lastName") }}
-          errorMessage={errors.lastName?.message}
-        />
+        {errorMessage && (
+          <Alert borderRadius="5px" status="error">
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        )}
         <FormInput
           label={"Email"}
           id={"email"}
