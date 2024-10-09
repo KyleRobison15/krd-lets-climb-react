@@ -12,9 +12,40 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const NavMenu = () => {
+  const { auth, setAuth } = useAuth();
   const { toggleColorMode, colorMode } = useColorMode();
+
+  const renderLoggedInMenu = () => {
+    return (
+      <>
+        <Link to="" onClick={() => setAuth({accessToken: ""})}>
+          <MenuItem icon={<BiLogInCircle fontSize="20px" />} fontSize="lg">
+            Logout
+          </MenuItem>
+        </Link>
+      </>
+    );
+  };
+
+  const renderLoggedOutMenu = () => {
+    return (
+      <>
+        <Link to="/auth/login">
+          <MenuItem icon={<BiLogInCircle fontSize="20px" />} fontSize="lg">
+            Sign in
+          </MenuItem>
+        </Link>
+        <Link to="/auth/register">
+          <MenuItem icon={<FiUserPlus fontSize="20px" />} fontSize="lg">
+            Sign up
+          </MenuItem>
+        </Link>
+      </>
+    );
+  };
 
   return (
     <Menu colorScheme="yellow">
@@ -28,16 +59,7 @@ const NavMenu = () => {
         borderWidth="3px"
       />
       <MenuList>
-        <Link to="/auth/login">
-          <MenuItem icon={<BiLogInCircle fontSize="20px" />} fontSize="lg">
-            Sign in
-          </MenuItem>
-        </Link>
-        <Link to="/auth/register">
-          <MenuItem icon={<FiUserPlus fontSize="20px" />} fontSize="lg">
-            Sign up
-          </MenuItem>
-        </Link>
+        {auth?.accessToken ? renderLoggedInMenu() : renderLoggedOutMenu()}
         <MenuDivider />
         <MenuItem
           icon={
