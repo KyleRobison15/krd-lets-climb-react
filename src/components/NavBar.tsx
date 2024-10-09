@@ -2,9 +2,22 @@ import { Button, HStack } from "@chakra-ui/react";
 import NavBarLogo from "./NavBarLogo";
 import ColorModeButton from "./ColorModeButton";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const NavBar = () => {
-  return (
+  const { auth, setAuth } = useAuth();
+
+  return auth.accessToken ? (
+    <>
+      <NavBarLogo logoSize="72px" />
+      <HStack gap={5}>
+        <ColorModeButton />
+        <Button colorScheme="yellow" variant="solid" onClick={() => setAuth({accessToken: ""})}>
+          Logout
+        </Button>
+      </HStack>
+    </>
+  ) : (
     <>
       <NavBarLogo logoSize="72px" />
       <HStack gap={5}>
