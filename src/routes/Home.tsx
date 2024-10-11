@@ -1,5 +1,9 @@
+import useAuth from "../hooks/useAuth";
+
 const Home = () => {
-  return <div>Welcome to Home!</div>;
+  const {user} = useAuth();
+
+  return <div>{`Welcome ${user?.firstName}!`}</div>;
 };
 
 export default Home;
