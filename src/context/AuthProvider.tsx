@@ -13,17 +13,44 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
+  useEffect,
   useState,
 } from "react";
+import apiClient, { apiEndpoints } from "../api/apiClient";
 
 // This Auth type matches the AuthenticationResponse object we get back from the krd-lets-climb-rest API
 export type AuthResponse = {
   accessToken: string;
 };
 
+type Authority = {
+  authority: string
+}
+
+// This User type matches the User model from the krd-lets-climb-rest API
+export type User = {
+  id: number,
+  email: string,
+  username: string,
+  firstName: string,
+  lastName: string,
+  creationTs: string,
+  isActive: boolean,
+  role: string,
+  imageFilePath: string,
+  imageFileName: string,
+  enabled: boolean,
+  authorities: Authority[]
+  accountNonExpired: boolean,
+  accoundNonLocked: boolean,
+  credentialsNonExpired: boolean
+}
+
 export interface AuthContextInterface {
   auth: AuthResponse;
   setAuth: Dispatch<SetStateAction<AuthResponse>>;
+  user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
 }
 
 type Props = {
@@ -36,6 +63,8 @@ const defaultAuthState = {
     accessToken: "",
   },
   setAuth: (authResponse: AuthResponse) => {},
+  user: null,
+  setUser: (user: User | null) => {}
 } as AuthContextInterface;
 
 const AuthContext = createContext(defaultAuthState);
@@ -45,8 +74,28 @@ export const AuthProvider = ({ children }: Props) => {
     accessToken: "",
   });
 
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+
+    // If we have an accessToken we can get the current user
+    if (auth.accessToken){
+          apiClient
+            .get<typeof user>(apiEndpoints.user, {headers: {Authorization : `Bearer ${auth.accessToken}`}})
+            .then((res) => {
+              setUser(res.data);
+            })
+            .catch((err) => {
+              console.log(err.response.data);
+            });
+    } else {
+      setUser(null);
+    }
+
+  }, [auth.accessToken]);
+
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
