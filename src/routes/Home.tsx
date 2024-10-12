@@ -1,9 +1,15 @@
 import useAuth from "../hooks/useAuth";
+import useLoading from "../hooks/useLoading";
 
 const Home = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
+  const { isLoading } = useLoading();
 
-  return <div>{`Welcome ${user?.firstName}!`}</div>;
+  return isLoading ? (
+    <div>Loading.....</div>
+  ) : (
+    <div>{`Welcome ${user?.firstName}!`}</div>
+  );
 };
 
 export default Home;

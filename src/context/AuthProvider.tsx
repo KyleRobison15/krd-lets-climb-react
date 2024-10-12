@@ -16,7 +16,9 @@ import {
   useEffect,
   useState,
 } from "react";
-import apiClient, { apiEndpoints } from "../api/apiClient";
+import { apiEndpoints } from "../api/apiClient";
+import { useApiClient } from "../hooks/useApiClient";
+
 
 // This Auth type matches the AuthenticationResponse object we get back from the krd-lets-climb-rest API
 export type AuthResponse = {
@@ -75,6 +77,8 @@ export const AuthProvider = ({ children }: Props) => {
   });
 
   const [user, setUser] = useState<User | null>(null);
+
+  const apiClient = useApiClient();
 
   useEffect(() => {
 
