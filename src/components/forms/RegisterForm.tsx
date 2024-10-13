@@ -14,7 +14,7 @@ import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
 import { Link, useNavigate } from "react-router-dom";
-import apiClient, { ApiError, apiEndpoints } from "../../api/apiClient";
+import useApiClient, { ApiError } from "../../hooks/useApiClient";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 
@@ -51,10 +51,11 @@ const registerFormSchema = z
 type FormData = z.infer<typeof registerFormSchema>;
 
 const RegisterForm = () => {
-  // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
-  const { setAuth, auth } = useAuth();
-  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  
+  const { setAuth, auth } = useAuth();
+  const {apiClient, apiEndpoints} = useApiClient();
+  const navigate = useNavigate();
 
   const {
     register,

@@ -14,11 +14,7 @@ import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
-import apiClient, {
-  ApiError,
-  apiEndpoints,
-  getApiError,
-} from "../../api/apiClient";
+import useApiClient, { ApiError } from "../../hooks/useApiClient";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useLoading from "../../hooks/useLoading";
@@ -41,9 +37,11 @@ type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
-  const { setAuth, auth } = useAuth();
-  const { setLoading } = useLoading();
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { setAuth, auth } = useAuth();
+  const {apiClient, apiEndpoints, getApiError} = useApiClient();
+  const { setLoading } = useLoading();
   const navigate = useNavigate();
 
   const {

@@ -16,7 +16,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import apiClient, { ApiError, apiEndpoints, getApiError } from "../api/apiClient";
+import useApiClient, { ApiError } from "../hooks/useApiClient";
 import useLoading from "../hooks/useLoading";
 
 // This Auth type matches the AuthenticationRequest object from the krd-lets-climb-rest API
@@ -77,11 +77,13 @@ const defaultAuthState = {
 const AuthContext = createContext(defaultAuthState);
 
 export const AuthProvider = ({ children }: Props) => {
-  const {setLoading} = useLoading();
   const [auth, setAuth] = useState<AuthResponse>({
     accessToken: "",
   });
   const [user, setUser] = useState<User | null>(null);
+  
+  const { setLoading } = useLoading();
+  const {apiClient, apiEndpoints, getApiError} = useApiClient();
 
   useEffect(() => {
 
