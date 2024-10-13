@@ -8,15 +8,20 @@ import {
   Flex,
   Heading,
   VStack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
-import apiClient, { apiEndpoints } from "../../api/apiClient";
+import apiClient, {
+  ApiError,
+  apiEndpoints,
+  getApiError,
+} from "../../api/apiClient";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -37,6 +42,7 @@ type FormData = z.infer<typeof signInFormSchema>;
 const SignInForm = () => {
   // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
   const { setAuth, auth } = useAuth();
+  const { setLoading } = useLoading();
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -47,29 +53,31 @@ const SignInForm = () => {
   } = useZodForm({ schema: signInFormSchema });
 
   const onSignIn = (data: FormData) => {
+    setLoading(true);
     apiClient
       .post<typeof auth>(apiEndpoints.authenticate, data)
       .then((res) => {
         setAuth(res.data);
+        setLoading(false);
         navigate("/climbs");
       })
       .catch((err) => {
-        if (err?.response?.status === 403) {
+        const apiError: ApiError = getApiError(err.response);
+        if (apiError.apiErrorCode === "AUTHENTICATION_FAILURE") {
           setErrorMessage("Invalid username or password.");
         } else {
-          setErrorMessage(
-            "Oops! There was an unexpected error. Please try again later."
-          );
+          setErrorMessage(apiError.message);
         }
+        setLoading(false);
       });
   };
 
   return (
     <>
-      <Heading textAlign="center">
-        Climb On!
-      </Heading>
-      <Text textAlign="center" mb={4}>Sign in to your account.</Text>
+      <Heading textAlign="center">Climb On!</Heading>
+      <Text textAlign="center" mb={4}>
+        Sign in to your account.
+      </Text>
       <VStack
         as="form"
         onSubmit={handleSubmit(onSignIn)}

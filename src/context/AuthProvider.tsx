@@ -16,9 +16,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { apiEndpoints } from "../api/apiClient";
-import { useApiClient } from "../hooks/useApiClient";
+import apiClient, { ApiError, apiEndpoints, getApiError } from "../api/apiClient";
+import useLoading from "../hooks/useLoading";
 
+// This Auth type matches the AuthenticationRequest object from the krd-lets-climb-rest API
+export type AuthRequest = {
+  username: string;
+  password: string;
+}
 
 // This Auth type matches the AuthenticationResponse object we get back from the krd-lets-climb-rest API
 export type AuthResponse = {
@@ -72,28 +77,31 @@ const defaultAuthState = {
 const AuthContext = createContext(defaultAuthState);
 
 export const AuthProvider = ({ children }: Props) => {
+  const {setLoading} = useLoading();
   const [auth, setAuth] = useState<AuthResponse>({
     accessToken: "",
   });
-
   const [user, setUser] = useState<User | null>(null);
-
-  const apiClient = useApiClient();
 
   useEffect(() => {
 
     // If we have an accessToken we can get the current user
     if (auth.accessToken){
+          setLoading(true);
           apiClient
             .get<typeof user>(apiEndpoints.user, {headers: {Authorization : `Bearer ${auth.accessToken}`}})
             .then((res) => {
               setUser(res.data);
+              setLoading(false);
             })
             .catch((err) => {
-              console.log(err.response.data);
+              const apiError: ApiError = getApiError(err);
+              console.log(apiError);
+              setLoading(false);
             });
     } else {
       setUser(null);
+      setLoading(false);
     }
 
   }, [auth.accessToken]);
