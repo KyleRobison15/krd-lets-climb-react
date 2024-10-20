@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Alert,
   AlertIcon,
@@ -14,14 +13,16 @@ import { z } from "zod";
 import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import useLoading from "../../hooks/useLoading";
 import apiClient, {
   ApiError,
   apiEndpoints,
   getApiError,
-} from "../../api/apiClient";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import useLoading from "../../hooks/useLoading";
+} from "../../services/apiClient";
+import { Auth, AuthResponse, User } from "../../context/AuthProvider";
+import { useState } from "react";
 
 const signInFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }),
@@ -40,10 +41,9 @@ const signInFormSchema = z.object({
 type FormData = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
-  // When sign in is successful, we will update the global authentication state by storing the access token from the server in our AuthContext
+  const [errorMessage, setErrorMessage] = useState("");
   const { setAuth, auth } = useAuth();
   const { setLoading } = useLoading();
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const {
@@ -52,14 +52,23 @@ const SignInForm = () => {
     formState: { errors },
   } = useZodForm({ schema: signInFormSchema });
 
-  const onSignIn = (data: FormData) => {
+  const onSignIn = (authRequest: FormData) => {
+
+    const authObj = {...auth};
+
     setLoading(true);
     apiClient
-      .post<typeof auth>(apiEndpoints.authenticate, data)
-      .then((res) => {
-        setAuth(res.data);
-        setLoading(false);
-        navigate("/climbs");
+      .post<AuthResponse>(apiEndpoints.authenticate, authRequest)
+      .then((res1) => {
+        const accessToken = res1.data.accessToken
+        authObj.accessToken = accessToken;
+        return apiClient.get<User>(apiEndpoints.user, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      })
+      .then((res2) => {
+        authObj.user = res2.data;
+        setAuth(authObj);
       })
       .catch((err) => {
         const apiError: ApiError = getApiError(err.response);
@@ -68,7 +77,12 @@ const SignInForm = () => {
         } else {
           setErrorMessage(apiError.message);
         }
+      })
+      .finally(() => {
         setLoading(false);
+        if (!errorMessage) {
+          navigate("/climbs");
+        }
       });
   };
 

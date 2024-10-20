@@ -7,15 +7,15 @@ import { AvatarMenu } from "./AvatarMenu";
 import useLoading from "../hooks/useLoading";
 
 const NavBar = () => {
-  const { auth, user } = useAuth();
+  const { auth } = useAuth();
   const { isLoading } = useLoading();
 
   return (
     <>
       <NavBarLogo logoSize="72px" />
-      {auth?.accessToken && isLoading ? (
+      {!auth && isLoading ? (
         <SkeletonCircle size="64px" />
-      ) : auth.accessToken && user ? (
+      ) : auth.accessToken && auth.user ? (
         <AvatarMenu />
       ) : (
         <HStack gap={5}>

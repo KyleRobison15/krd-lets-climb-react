@@ -6,15 +6,15 @@ import useLoading from "../hooks/useLoading";
 import { SkeletonCircle } from "@chakra-ui/react";
 
 const NavBarMobile = () => {
-  const { auth, user } = useAuth();
+  const { auth: {accessToken, user} } = useAuth();
   const {isLoading} = useLoading();
 
   const renderMenu = () => {
-    if(auth.accessToken && isLoading){
+    if(accessToken && isLoading){
       return <SkeletonCircle size="64px" />
     }
 
-    return auth.accessToken && user ? <AvatarMenu /> : <LoggedOutNavMenu />
+    return accessToken && user ? <AvatarMenu /> : <LoggedOutNavMenu />
   }
 
   return (

@@ -1,5 +1,17 @@
 import axios, { AxiosResponse } from "axios";
 
+export interface ErrorDetail {
+  code: string;
+  target: string;
+  description: string;
+}
+
+export interface ApiError {
+  apiErrorCode: string;
+  message: string;
+  errorDetails: ErrorDetail[];
+}
+
 const apiVersion = "v1";
 
 const rootApiPath = `api/${apiVersion}`;
@@ -14,18 +26,6 @@ export const apiEndpoints = {
   grades: "grades",
   styles: "styles",
 };
-
-export interface ErrorDetail {
-  code: string;
-  target: string;
-  description: string;
-}
-
-export interface ApiError {
-  apiErrorCode: string;
-  message: string;
-  errorDetails: ErrorDetail[];
-}
 
 export const getApiError = (response: AxiosResponse): ApiError => {
   if (response?.data) {
