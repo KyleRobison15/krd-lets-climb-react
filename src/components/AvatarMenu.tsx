@@ -8,7 +8,7 @@ import useAuth from "../hooks/useAuth";
 
 export const AvatarMenu = () => {
 
-  const { setAuth, user } = useAuth();
+  const { setAuth, auth: {user}} = useAuth();
   const avatarBg = useColorModeValue("yellow.400", "yellow.200");
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -51,7 +51,7 @@ export const AvatarMenu = () => {
         <MenuItem
           icon={<BiLogInCircle fontSize="20px" />}
           fontSize="lg"
-          onClick={() => setAuth({ accessToken: "" })}
+          onClick={() => setAuth({ accessToken: "", user: null })}
         >
           Logout
         </MenuItem>

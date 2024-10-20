@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 import useLoading from "../hooks/useLoading";
 
 const Home = () => {
-  const { user } = useAuth();
+  const { auth: {user} } = useAuth();
   const { isLoading } = useLoading();
 
   return isLoading ? (

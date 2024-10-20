@@ -5,14 +5,14 @@ import useAuth from "../hooks/useAuth";
 // Any child components of RequireAuth will require an access token in order to be displayed!
 // The child components will be rendered using the <Outlet /> component and specific protected routes.
 const RequireAuth = () => {
-  const { auth } = useAuth();
+  const { auth: {accessToken, user} } = useAuth();
   const location = useLocation();
 
   return (
     // If there is an access token in our AuthContext, then there is a logged in user
     // Render the Outlet if we have a logged in user
     // Navigate to the login page if we do not have a user
-    auth?.accessToken ? (
+    accessToken && user ? (
       <Outlet />
     ) : (
       <Navigate to="/auth/login" state={{ from: location }} replace />

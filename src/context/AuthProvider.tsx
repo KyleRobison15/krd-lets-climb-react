@@ -13,51 +13,50 @@ import {
   ReactNode,
   SetStateAction,
   createContext,
-  useEffect,
   useState,
 } from "react";
-import useApiClient, { ApiError } from "../hooks/useApiClient";
-import useLoading from "../hooks/useLoading";
 
 // This Auth type matches the AuthenticationRequest object from the krd-lets-climb-rest API
 export type AuthRequest = {
   username: string;
   password: string;
-}
+};
 
-// This Auth type matches the AuthenticationResponse object we get back from the krd-lets-climb-rest API
 export type AuthResponse = {
   accessToken: string;
+}
+
+export type Auth = {
+  accessToken: string;
+  user: User | null;
 };
 
 type Authority = {
-  authority: string
-}
+  authority: string;
+};
 
 // This User type matches the User model from the krd-lets-climb-rest API
 export type User = {
-  id: number,
-  email: string,
-  username: string,
-  firstName: string,
-  lastName: string,
-  creationTs: string,
-  isActive: boolean,
-  role: string,
-  imageFilePath: string,
-  imageFileName: string,
-  enabled: boolean,
-  authorities: Authority[]
-  accountNonExpired: boolean,
-  accoundNonLocked: boolean,
-  credentialsNonExpired: boolean
-}
+  id: number;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  creationTs: string;
+  isActive: boolean;
+  role: string;
+  imageFilePath: string;
+  imageFileName: string;
+  enabled: boolean;
+  authorities: Authority[];
+  accountNonExpired: boolean;
+  accoundNonLocked: boolean;
+  credentialsNonExpired: boolean;
+};
 
 export interface AuthContextInterface {
-  auth: AuthResponse;
-  setAuth: Dispatch<SetStateAction<AuthResponse>>;
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  auth: Auth;
+  setAuth: Dispatch<SetStateAction<Auth>>;
 }
 
 type Props = {
@@ -68,48 +67,23 @@ type Props = {
 const defaultAuthState = {
   auth: {
     accessToken: "",
+    user: null
   },
-  setAuth: (authResponse: AuthResponse) => {},
-  user: null,
-  setUser: (user: User | null) => {}
+  setAuth: (auth: Auth) => {},
 } as AuthContextInterface;
 
 const AuthContext = createContext(defaultAuthState);
 
 export const AuthProvider = ({ children }: Props) => {
-  const [auth, setAuth] = useState<AuthResponse>({
+  const [auth, setAuth] = useState<Auth>({
     accessToken: "",
+    user: null
   });
-  const [user, setUser] = useState<User | null>(null);
-  
-  const { setLoading } = useLoading();
-  const {apiClient, apiEndpoints, getApiError} = useApiClient();
-
-  useEffect(() => {
-
-    // If we have an accessToken we can get the current user
-    if (auth.accessToken){
-          setLoading(true);
-          apiClient
-            .get<typeof user>(apiEndpoints.user, {headers: {Authorization : `Bearer ${auth.accessToken}`}})
-            .then((res) => {
-              setUser(res.data);
-              setLoading(false);
-            })
-            .catch((err) => {
-              const apiError: ApiError = getApiError(err);
-              console.log(apiError);
-              setLoading(false);
-            });
-    } else {
-      setUser(null);
-      setLoading(false);
-    }
-
-  }, [auth.accessToken]);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, user, setUser }}>
+    <AuthContext.Provider
+      value={{ auth, setAuth }}
+    >
       {children}
     </AuthContext.Provider>
   );

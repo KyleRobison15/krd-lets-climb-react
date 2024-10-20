@@ -14,9 +14,11 @@ import useZodForm from "../../hooks/useZodForm";
 import FormInput from "../common/FormInput";
 import FormPasswordInput from "../common/FormPasswordInput";
 import { Link, useNavigate } from "react-router-dom";
-import useApiClient, { ApiError } from "../../hooks/useApiClient";
+import apiClient, { apiEndpoints, ApiError } from "../../services/apiClient";
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
+import { User } from "../../context/AuthProvider";
 
 const registerFormSchema = z
   .object({
@@ -52,30 +54,41 @@ type FormData = z.infer<typeof registerFormSchema>;
 
 const RegisterForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const { setAuth, auth } = useAuth();
-  const {apiClient, apiEndpoints} = useApiClient();
+  const { setLoading } = useLoading();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError
+    setError,
   } = useZodForm({ schema: registerFormSchema });
 
   const onRegister = (data: FormData) => {
+    setLoading(true);
+
     const registerRequestDto = {
       email: data.email,
       username: data.username,
       password: data.password,
     };
 
+    const authObj = { ...auth };
+
     apiClient
       .post<typeof auth>(apiEndpoints.register, registerRequestDto)
-      .then((response) => {
-        setAuth(response.data);
-        navigate("/climbs");
+      .then((res1) => {
+        const accessToken = res1.data.accessToken;
+        authObj.accessToken = accessToken;
+        return apiClient.get<User>(apiEndpoints.user, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      })
+      .then((res2) => {
+        authObj.user = res2.data;
+        setAuth(authObj);
       })
       .catch((error) => {
         const {
@@ -84,21 +97,25 @@ const RegisterForm = () => {
 
         // If the error response is due to a bad request, set the error messages on the fields that failed the request
         if (status === 400) {
-          
           apiError.errorDetails.forEach((detail) => {
             const errorField = detail.target.split("/").pop();
             setError(errorField as `root.${string}`, {
               type: "manual",
               message: detail.description,
             });
-          })
-
+          });
         }
         // Use generic error response if the error was unexpected
         else {
           setErrorMessage(
             "Oops! There was an unexpected error. Please try again later."
           );
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+        if (!errorMessage) {
+          navigate("/climbs");
         }
       });
   };

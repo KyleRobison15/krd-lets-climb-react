@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { List, ListItem, Text } from "@chakra-ui/react";
+import apiClient, { apiEndpoints } from "../services/apiClient";
+import useAuth from "../hooks/useAuth";
 
 export interface AttemptImage {
   id: number;
@@ -41,20 +44,34 @@ export interface Climb {
 }
 
 const ClimbsGrid = () => {
-  const [climbs, setClimbs] = useState([]);
-  const [error, setError] = useState("");
+  const [climbs, setClimbs] = useState<Climb[]>([]);
+  const {
+    auth: { accessToken },
+  } = useAuth();
 
-//   useEffect(() => {
+  useEffect(() => {
+    apiClient
+      .get<Climb[]>(apiEndpoints.climbs, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      .then((res) => {
+        setClimbs(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-//     try {
-        
-//     } catch (error) {
-        
-//     }
-
-//   }, []);
-
-  return <div>ClimbsGrid</div>;
+  return (
+    <>
+      <Text>{`You have ${climbs.length} climbs.`}</Text>
+      <List>
+        {climbs.map((climb) => (
+          <ListItem key={climb.id}>{climb.name}</ListItem>
+        ))}
+      </List>
+    </>
+  );
 };
 
 export default ClimbsGrid;
