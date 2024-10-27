@@ -12,6 +12,11 @@ const navBarBgColors = {
   dark: "rgba(0,0,0,1)",
 };
 
+const mainBackgroundColor = {
+  light: "gray.100",
+  dark: "gray.800",
+};
+
 const formContainerBgColors = {
   light: "rgba(255,255,255,0.9)",
   dark: "rgba(0,0,0,0.8)",
@@ -45,6 +50,11 @@ export default function useCustomColorValues() {
 
   const navBarBg = useColorModeValue(navBarBgColors.light, navBarBgColors.dark);
 
+  const mainBg = useColorModeValue(
+    mainBackgroundColor.light,
+    mainBackgroundColor.dark
+  );
+
   const splashBgIamge = useColorModeValue(
     splashBgImage.light,
     splashBgImage.dark
@@ -56,6 +66,7 @@ export default function useCustomColorValues() {
     formContainerBg: formContainerBg,
     navBarBg: navBarBg,
     splashBgImage: splashBgIamge,
+    mainBgColor: mainBg
   };
 
   return customColorValues;

@@ -5,11 +5,18 @@ import useCustomColorValues from "./hooks/useCustomColorValues";
 import { Outlet } from "react-router-dom";
 
 const App = () => {
-  const { navBarBg } = useCustomColorValues();
+  const { navBarBg, mainBgColor } = useCustomColorValues();
   const mainMx = ["0px", "0px", "50px", "100px"];
 
   return (
-    <Flex id="app-container" m="0" p="0" flexDir="column" h="100vh">
+    <Flex
+      id="app-container"
+      m="0"
+      p="0"
+      flexDir="column"
+      h="100vh"
+      bg={mainBgColor}
+    >
       <Box
         h="100px"
         w="100%"
@@ -39,14 +46,7 @@ const App = () => {
           </Hide>
         </HStack>
       </Box>
-      <Flex
-        as="main"
-        id="main-container"
-        flexGrow="1"
-        mt="100px"
-        p="10px 30px"
-        mx={mainMx}
-      >
+      <Flex as="main" id="main-container" flexGrow="1" mt="100px" mx={mainMx}>
         <Outlet />
       </Flex>
     </Flex>

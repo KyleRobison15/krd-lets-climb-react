@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 
 const Splash = () => {
   const { formContainerBg, splashBgImage } = useCustomColorValues();
+  const mx = ["0px", "0px", "-50px", "-100px"];
 
   return (
     <Flex
@@ -16,6 +17,7 @@ const Splash = () => {
       bgColor="rgba(255, 255, 255, 0.6)"
       justifyContent="center"
       alignItems="center"
+      mx={mx}
     >
       <Box
         p={10}

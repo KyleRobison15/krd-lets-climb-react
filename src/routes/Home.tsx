@@ -1,5 +1,4 @@
-import { Stack } from "@chakra-ui/react";
-import ClimbsGrid from "../components/ClimbsGrid";
+import { Grid, GridItem, Show, Stack } from "@chakra-ui/react";
 import useAuth from "../hooks/useAuth";
 import useLoading from "../hooks/useLoading";
 
@@ -10,10 +9,24 @@ const Home = () => {
   return isLoading ? (
     <div>Loading.....</div>
   ) : (
-    <Stack>
-      <div>{`Welcome ${user?.firstName}!`}</div>
-      <ClimbsGrid />
-    </Stack>
+    <Grid
+      templateAreas={{
+        base: `"main"`,
+        lg: `"aside main"`,
+      }}
+      templateColumns={{
+        base: "1fr",
+        lg: "200px 1fr",
+      }}
+      p="10px 30px"
+    >
+      <Show above="lg">
+        <GridItem area="aside" bg="gray.50"></GridItem>
+      </Show>
+      <GridItem area="main" bg="gray.100" w="100%">
+        Test
+      </GridItem>
+    </Grid>
   );
 };
 
