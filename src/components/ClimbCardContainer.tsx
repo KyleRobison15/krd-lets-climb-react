@@ -7,7 +7,7 @@ interface Props {
 
 const ClimbCardContainer = ({children}: Props) => {
   return (
-    <Box width="100%" borderRadius={10} overflow="hidden" borderWidth="1px">
+    <Box width="100%" borderRadius={10}>
       {children}
     </Box>
   );
