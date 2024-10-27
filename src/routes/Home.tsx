@@ -1,4 +1,4 @@
-import { Flex, Grid, GridItem, Show, Stack } from "@chakra-ui/react";
+import { Flex, Show } from "@chakra-ui/react";
 import useAuth from "../hooks/useAuth";
 import useLoading from "../hooks/useLoading";
 import ClimbsGrid from "../components/ClimbsGrid";
@@ -15,7 +15,7 @@ const Home = () => {
         <Flex
           id="aside-container"
           mt="30px"
-          w="250px"
+          w="200px"
           bg="white"
           borderRadius="10px"
           borderWidth="1px"
@@ -30,6 +30,7 @@ const Home = () => {
         bg="white"
         borderRadius="10px"
         borderWidth="1px"
+        justifyContent="center"
       >
         <ClimbsGrid />
       </Flex>
